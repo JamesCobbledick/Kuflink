@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <title>Kuflink Test</title>
+
+    <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <img src="/assets/imgs/logo.png" class="img-responsive logo">
+
+        <p>Test answer, written by James Cobbledick</p>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card calculator" >
+                <div class="card-body">
+                    <h5 class="card-title">Emoji Calculator</h5>
+                    <p class="card-text"></p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="operand_1" placeholder="Enter first operand" aria-label="Text input with dropdown button">
+                        <div class="input-group-prepend dropdown">
+
+                            <button class="btn btn-outline-secondary dropdown-toggle" id="operator" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&#128125;</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#" >&#128125;</a>
+                                <a class="dropdown-item" href="#" >&#128128;</a>
+                                <a class="dropdown-item" href="#" >&#128123;</a>
+                                <a class="dropdown-item" href="#" >&#128561;</a>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" id="operand_2" placeholder="Enter second operand" aria-label="Text input with dropdown button">
+                    </div>
+                </div>
+                <a href="#" class="btn btn-primary" id="calculate">Calculate</a>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card calculator" >
+                <div class="card-body">
+                    <h5 class="card-title">Result</h5>
+                    <p class="card-text" id="result"></p>
+
+                </div>
+
+            </div>
+        </div>
+        </div>
+
+    </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="error">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Error</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="error-response"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Try Again</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/js/popper.js" ></script>
+<script src="/assets/js/jquery.js" ></script>
+
+<script src="/assets/bootstrap/js/bootstrap.js" ></script>
+<script>
+    $('.dropdown-item').click(function(){
+        $('.dropdown-toggle').text($(this).text());
+
+    });
+
+    $('#calculate').click(function(){
+        const form = [];
+        form.push({
+            operand1:  $('#operand_1').val(),
+            operand2:  $('#operand_2').val(),
+            operator:  $('#operator').text()
+        });
+
+        $.ajax({
+            url: '/assets/php/calculate.php',
+            type: 'POST',
+            datatype: 'json',
+            data: JSON.stringify(form),
+            contentType: 'application/json',
+            success: function (data) {
+                $('#result').text(data);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                $('#error-response').text(xhr.responseText);
+                $('#error').modal('show');
+            }
+        });
+    })
+</script>
+</body>
+</html>
